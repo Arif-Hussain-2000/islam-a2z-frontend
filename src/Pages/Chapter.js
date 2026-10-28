@@ -15,7 +15,7 @@ export const Chapter = () => {
     const fetchChapters = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/chapters?bookId=${bookId}`,
+          `${process.env.REACT_APP_API_URL}/api/chapters?bookId=${bookId}`,
         );
 
         if (!response.ok) {
@@ -54,7 +54,7 @@ setChapters(sortedChapters);
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/hadiths?bookId=${bookId}&hadithNumber=${hadithNumber}`,
+        `${process.env.REACT_APP_API_URL}/api/hadiths?bookId=${bookId}&hadithNumber=${hadithNumber}`,
       );
 
       if (!response.ok) {

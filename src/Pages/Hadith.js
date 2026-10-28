@@ -23,7 +23,7 @@ export const Hadith = () => {
     const fetchData = async () => {
       try {
         const hadithResponse = await fetch(
-          `http://localhost:5000/api/hadiths?chapterId=${chapterId}`,
+          `${process.env.REACT_APP_API_URL}/api/hadiths?chapterId=${chapterId}`,
         );
 
         if (!hadithResponse.ok) {
@@ -45,7 +45,7 @@ export const Hadith = () => {
         }
 
         const chapterResponse = await fetch(
-          `http://localhost:5000/api/chapters/${chapterId}`,
+          `${process.env.REACT_APP_API_URL}/api/chapters/${chapterId}`,
         );
 
         if (!chapterResponse.ok) {

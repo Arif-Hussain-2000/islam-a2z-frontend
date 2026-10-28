@@ -21,7 +21,7 @@ export const HadithDashboard = () => {
   // Fetch Books
   const fetchBooks = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/books");
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/books`);
 
       const data = await response.json();
 
@@ -39,7 +39,7 @@ export const HadithDashboard = () => {
   const fetchChapters = async (bookId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/chapters?bookId=${bookId}`,
+        `${process.env.REACT_APP_API_URL}/api/chapters?bookId=${bookId}`,
       );
 
       const data = await response.json();
@@ -104,7 +104,7 @@ export const HadithDashboard = () => {
 
     try {
       const token = sessionStorage.getItem("adminToken");
-      const response = await fetch("http://localhost:5000/api/hadiths", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/hadiths`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -221,7 +221,7 @@ export const HadithDashboard = () => {
     try {
       const token=sessionStorage.getItem("adminToken");
       const response = await fetch(
-        `http://localhost:5000/api/hadiths/${selectedUpdateHadith}`,
+        `${process.env.REACT_APP_API_URL}/api/hadiths/${selectedUpdateHadith}`,
         {
           method: "PUT",
           headers: {
@@ -282,7 +282,7 @@ export const HadithDashboard = () => {
   const fetchHadiths = async (chapterId) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/hadiths?chapterId=${chapterId}`,
+        `${process.env.REACT_APP_API_URL}/api/hadiths?chapterId=${chapterId}`,
       );
 
       const data = await response.json();

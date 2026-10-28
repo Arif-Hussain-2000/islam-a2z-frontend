@@ -12,7 +12,7 @@ export const BookDashboaard = () => {
   // Fetch Books
   const fetchBooks = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/books");
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/books`);
       const data = await response.json();
 
       if (response.ok) {
@@ -36,7 +36,7 @@ export const BookDashboaard = () => {
 
     try {
       const token = sessionStorage.getItem("adminToken");
-      const response = await fetch("http://localhost:5000/api/books", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/books`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export const BookDashboaard = () => {
     try {
       const token= sessionStorage.getItem("adminToken");
       const response = await fetch(
-        `http://localhost:5000/api/books/${selectedUpdateBook}`,
+        `${process.env.REACT_APP_API_URL}/api/books/${selectedUpdateBook}`,
         {
           method: "PUT",
           headers: {

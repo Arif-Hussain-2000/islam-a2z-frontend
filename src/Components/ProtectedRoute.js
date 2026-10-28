@@ -20,7 +20,7 @@ export const ProtectedRoute = ({ children }) => {
             try {
 
                 const response = await fetch(
-                    "http://localhost:5000/api/auth/me",
+                    `${process.env.REACT_APP_API_URL}/api/auth/me`,
                     {
                         method: "GET",
 
