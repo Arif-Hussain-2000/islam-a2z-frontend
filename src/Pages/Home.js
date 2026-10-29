@@ -14,7 +14,7 @@ export const Home = () => {
 
           {/* Heading */}
 
-          <h1 className="text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-900 sm:text-5xl md:text-6xl lg:text-7xl">
             Your Digital Gateway to
             <span className="block text-green-700">Islamic Knowledge</span>
           </h1>
