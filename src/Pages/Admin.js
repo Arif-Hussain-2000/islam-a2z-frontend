@@ -137,7 +137,7 @@ export const Admin = () => {
 
           <button
             type="submit"
-            className="w-full bg-emerald-700 text-white p-3 rounded-lg"
+            className="w-full bg-green-700 text-white p-3 rounded-lg hover:bg-green-800"
           >
             Login
           </button>

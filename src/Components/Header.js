@@ -18,7 +18,7 @@ export const Header = () => {
             className="h-9 w-9 object-contain sm:h-10 sm:w-10"
           />
 
-          <span className="text-lg sm:text-xl">ISLAM A2Z</span>
+          <span className="text-lg sm:text-xl text-green-700">ISLAM A2Z</span>
         </Link>
 
         <nav className="hidden items-center gap-2 md:flex">

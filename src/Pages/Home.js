@@ -22,7 +22,7 @@ export const Home = () => {
           {/* Description */}
 
           <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-gray-600 md:text-lg">
-            Explore authentic Hadith, Quran and Islamic teachings through a
+            Explore Hadith, Quran, Sunnah and Islamic teachings through a
             simple, organized and distraction-free digital learning experience.
           </p>
 
@@ -33,7 +33,7 @@ export const Home = () => {
               to="/books"
               className="rounded-lg bg-green-700 px-7 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-green-800 hover:shadow-md"
             >
-              Explore Knowledge →
+              Explore  →
             </Link>
 
             <Link
@@ -66,12 +66,9 @@ export const Home = () => {
 
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-green-700">
-            Explore
-          </p>
 
           <h2 className="mt-3 text-3xl font-bold text-gray-900 md:text-4xl">
-            Islamic Knowledge in One Place
+            All in One Place
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl text-gray-500">
@@ -139,7 +136,7 @@ export const Home = () => {
             </div>
 
             <h3 className="mt-6 text-xl font-bold text-gray-900 group-hover:text-green-700">
-              Islamic Books
+              Books
             </h3>
 
             <p className="mt-3 text-sm leading-7 text-gray-500">
@@ -158,7 +155,7 @@ export const Home = () => {
       <section className="bg-green-800">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
           <h2 className="text-3xl font-bold text-white md:text-4xl">
-            Begin Your Journey of Knowledge
+            Begin Your Journey
           </h2>
 
           <p className="mx-auto mt-4 max-w-2xl leading-7 text-green-100">
