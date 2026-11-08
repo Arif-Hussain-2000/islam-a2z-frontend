@@ -88,15 +88,45 @@ export const Hadith = () => {
 
   return (
     <main className="min-h-screen bg-white py-10 md:py-14">
-      <div className="mx-auto max-w-5xl px-5 md:px-8">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(`/books/${bookId}/chapters`)}
-          className="mb-8 inline-flex items-center gap-2 rounded-xl  bg-green-800 px-4 py-2.5 text-xsm font-medium text-white shadow-sm transition duration-300  hover:bg-green-900 md:text-sm"
-        >
-          <span className="text-lg">←</span>
-          Back to Chapters
-        </button>
+      <div className="mx-auto max-w-5xl px-2 md:px-8">
+        <div className="mb-5 flex justify-between">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate(`/books/${bookId}/chapters`)}
+            className="mb-8 inline-flex  items-center gap-2 rounded-xl  bg-green-800 px-7 py-4  text-xsm font-medium text-white shadow-sm transition duration-300  hover:bg-green-900 md:text-sm"
+          >
+            <span className="text-sm md:text-xl">←</span>
+            Back
+          </button>
+          {/* Language Selector */}
+          <div className="mb-5 flex justify-center p-1.5">
+            <div className="rounded-2xl  bg-white shadow-sm">
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setLanguage("urdu")}
+                  className={`urdu-text rounded-xl px-4 py-2 md:px-7 md:py-4 text-xsm md:text-sm font-semibold transition duration-300 ${
+                    language === "urdu"
+                      ? "bg-green-800 text-white shadow-md"
+                      : "text-gray-900 hover:bg-green-50 hover:text-green-700"
+                  }`}
+                >
+                  اردو
+                </button>
+
+                <button
+                  onClick={() => setLanguage("english")}
+                  className={`rounded-xl px-4 py-2 md:px-7 md:py-4 text-xsm md:text-sm font-semibold transition duration-300 ${
+                    language === "english"
+                      ? "bg-green-800 text-white shadow-md"
+                      : "text-gray-900 hover:bg-green-50 hover:text-green-700"
+                  }`}
+                >
+                  English
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Chapter Header */}
         <div className="relative mb-10 overflow-hidden rounded-3xl border border-green-100 bg-gradient-to-br from-green-900 via-green-800 to-green-700 px-6 py-10 text-center shadow-lg md:px-10">
@@ -111,35 +141,6 @@ export const Hadith = () => {
           </div>
         </div>
 
-        {/* Language Selector */}
-        <div className="mb-8 flex justify-center">
-          <div className="rounded-2xl border border-green-800 bg-white p-1.5 shadow-sm">
-            <div className="flex gap-1">
-              <button
-                onClick={() => setLanguage("urdu")}
-                className={`urdu-text rounded-xl px-7 py-2.5 text-sm font-semibold transition duration-300 ${
-                  language === "urdu"
-                    ? "bg-green-800 text-white shadow-md"
-                    : "text-gray-900 hover:bg-green-50 hover:text-green-700"
-                }`}
-              >
-                اردو
-              </button>
-
-              <button
-                onClick={() => setLanguage("english")}
-                className={`rounded-xl px-7 py-2.5 text-sm font-semibold transition duration-300 ${
-                  language === "english"
-                    ? "bg-green-800 text-white shadow-md"
-                    : "text-gray-900 hover:bg-green-50 hover:text-green-700"
-                }`}
-              >
-                English
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Hadith */}
         <div>
           {currentHadith && (
@@ -147,7 +148,6 @@ export const Hadith = () => {
               {/* Hadith Header */}
               <div className="flex items-center justify-between border-b border-green-50 bg-green-800 px-5 py-4 md:px-7">
                 <div className="flex items-center gap-3">
-
                   <div>
                     <p className="text-xl font-bold text-white">
                       Hadith no. {currentHadith.hadithNumber}
@@ -231,12 +231,11 @@ export const Hadith = () => {
                 {/* Narrator */}
                 {openNarrator === currentHadith._id && (
                   <div className="mt-5 rounded-2xl border border-gray-100 whitespace-pre-wrap bg-white p-5 md:p-6">
-                    <h4
+                    <div
                       className={`mb-3 font-semibold text-green-800 ${
                         language === "urdu" ? "urdu-text" : ""
                       }`}
-                    >
-                    </h4>
+                    ></div>
 
                     <p
                       dir={language === "urdu" ? "rtl" : "ltr"}
@@ -256,12 +255,11 @@ export const Hadith = () => {
                 {/* Explanation */}
                 {openExplanation === currentHadith._id && (
                   <div className="mt-5 rounded-2xl border border-gray-100 bg-white p-5 md:p-6">
-                    <h4
+                    <div
                       className={`mb-3 font-semibold whitespace-pre-wrap text-gray-900 ${
                         language === "urdu" ? "urdu-text" : ""
                       }`}
-                    >
-                    </h4>
+                    ></div>
 
                     <p
                       dir={language === "urdu" ? "rtl" : "ltr"}
