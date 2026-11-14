@@ -104,13 +104,13 @@ export const Hadith = () => {
               <div className="flex gap-1">
                 <button
                   onClick={() => setLanguage("urdu")}
-                  className={`urdu-text rounded-xl px-4 py-2 md:px-7 md:py-4 text-xsm md:text-sm font-semibold transition duration-300 ${
+                  className={` rounded-xl px-4 py-2 md:px-7 md:py-4 text-xsm md:text-sm font-semibold transition duration-300 ${
                     language === "urdu"
                       ? "bg-green-800 text-white shadow-md"
                       : "text-gray-900 hover:bg-green-50 hover:text-green-700"
                   }`}
                 >
-                  اردو
+                  Urd
                 </button>
 
                 <button
@@ -121,7 +121,7 @@ export const Hadith = () => {
                       : "text-gray-900 hover:bg-green-50 hover:text-green-700"
                   }`}
                 >
-                  English
+                  Eng
                 </button>
               </div>
             </div>
@@ -140,29 +140,46 @@ export const Hadith = () => {
             </h1>
           </div>
         </div>
+        <div className="flex flex-nowrap overflow-x-auto gap-2 whitespace-nowrap ">
+         {hadiths.map((hadith, index) => (
+  <button
+    key={hadith._id || index}
+    className={`shrink-0 rounded-lg border px-5 py-3 text-sm md:text-lg font-semibold mb-4${
+      currentHadithIndex === index
+      ?" px-5 py-3 bg-green-800 text-white":" px-5 py-3 bg-white text-black"
+    }`}
+    onClick={()=>{
+      setCurrentHadithIndex(index);
+    }}
+  >
+    {hadith.hadithNumber}
+  </button>
+))}
+          
+        </div>
 
         {/* Hadith */}
         <div>
           {currentHadith && (
             <article className="overflow-hidden rounded-xl   bg-white ">
               {/* Hadith Header */}
-              <div className="flex items-center justify-between border-b border-green-50 bg-green-800 px-5 py-4 md:px-7">
+              <div className="flex items-center justify-center border-b border-green-50 bg-green-800 px-5 py-4 md:px-7">
                 <div className="flex items-center gap-3">
-                  <div>
-                    <p className="text-xl font-bold text-white">
-                      Hadith no. {currentHadith.hadithNumber}
+                  <div >
+                    <p className="text-xl md:text-2xl font-bold text-white urdu-text">
+                      {currentHadith.hadithTitle}
                     </p>
                   </div>
                 </div>
               </div>
 
               <div className="p-5 md:p-8">
-                <div className="flex flex-col md:flex-row-reverse gap-4">
+                <div className="grid md:grid-cols-2 items-start  gap-4" style={{direction:"rtl"}}>
                   {/* Arabic */}
-                  <div className="relative mb-2 overflow-hidden rounded-xl border border-gray-100 px-2 py-2 text-center md:px-4 md:py-10">
+                  <div className="w-full min-w-0 relative mb-2 overflow-hidden rounded-xl border border-gray-100 px-2 py-2 text-center md:px-4 md:py-10">
                     <p
                       dir="rtl"
-                      className="arabic-text relative text-right text-2xl leading-[2] text-gray-900 font-semibold md:text-3xl"
+                      className="text-justify arabic-text relative text-right text-2xl leading-[2] text-gray-900 font-semibold md:text-3xl"
                     >
                       {currentHadith.arabic}
                     </p>
@@ -170,12 +187,12 @@ export const Hadith = () => {
 
                   {/* Translation */}
                   <div className="mb-2">
-                    <div className="rounded-2xl border text-center border-gray-100  bg-white px-2 py-10 md:px-10">
+                    <div className="w-full min-w-0 rounded-2xl border text-center border-gray-100  bg-white px-2 py-10 md:px-10">
                       <p
                         dir={language === "urdu" ? "rtl" : "ltr"}
                         className={`${
                           language === "urdu" ? "urdu-text" : ""
-                        } text-2xl leading-9 text-gray-900  md:text-3xl ${
+                        } text-2xl leading-9 text-gray-900 text-justify  md:text-3xl ${
                           language === "urdu" ? "text-right" : "text-left"
                         }`}
                       >
@@ -241,7 +258,7 @@ export const Hadith = () => {
                       dir={language === "urdu" ? "rtl" : "ltr"}
                       className={`${
                         language === "urdu" ? "urdu-text" : ""
-                      } text-base leading-8 text-gray-900 ${
+                      } text-base leading-8 text-justify text-gray-900 ${
                         language === "urdu" ? "text-right" : "text-left"
                       }`}
                     >
@@ -265,7 +282,7 @@ export const Hadith = () => {
                       dir={language === "urdu" ? "rtl" : "ltr"}
                       className={`${
                         language === "urdu" ? "urdu-text" : ""
-                      } text-base whitespace-pre-wrap leading-8 text-gray-900 ${
+                      } text-base text-justify whitespace-pre-wrap leading-8 text-gray-900 ${
                         language === "urdu" ? "text-right" : "text-left"
                       }`}
                     >
@@ -279,39 +296,6 @@ export const Hadith = () => {
             </article>
           )}
         </div>
-
-        {/* Previous / Next */}
-        {hadiths.length > 0 && (
-          <div className="mt-7 flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-3  md:p-4">
-            <button
-              onClick={() => {
-                setCurrentHadithIndex((prev) => prev - 1);
-                setOpenNarrator(null);
-                setOpenExplanation(null);
-              }}
-              disabled={currentHadithIndex === 0}
-              className="rounded-xl bg-green-50 px-4 py-2.5 text-sm font-semibold text-green-800 transition hover:bg-green-100 disabled:cursor-not-allowed disabled:opacity-30 md:px-5"
-            >
-              ← <span className="hidden sm:inline">Previous</span>
-            </button>
-
-            <div className="rounded-full bg-green-800 px-4 py-2 text-sm font-semibold text-white">
-              {currentHadithIndex + 1} / {hadiths.length}
-            </div>
-
-            <button
-              onClick={() => {
-                setCurrentHadithIndex((prev) => prev + 1);
-                setOpenNarrator(null);
-                setOpenExplanation(null);
-              }}
-              disabled={currentHadithIndex === hadiths.length - 1}
-              className="rounded-xl bg-green-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-30 md:px-5"
-            >
-              <span className="hidden sm:inline">Next</span> →
-            </button>
-          </div>
-        )}
 
         {/* No Hadith */}
         {hadiths.length === 0 && (

@@ -7,6 +7,7 @@ export const HadithDashboard = () => {
   const [chapters, setChapters] = useState([]);
   const [selectedHadithChapter, setSelectedHadithChapter] = useState("");
   const [hadithNumber, setHadithNumber] = useState("");
+  const [hadithTitle, setHadithTitle] = useState("");
   const [arabic, setArabic] = useState("");
   const [urdu, setUrdu] = useState("");
   const [english, setEnglish] = useState("");
@@ -60,6 +61,7 @@ export const HadithDashboard = () => {
     setHadiths([]);
 
     setHadithNumber("");
+    setHadithTitle("");
     setArabic("");
     setUrdu("");
     setEnglish("");
@@ -84,6 +86,10 @@ export const HadithDashboard = () => {
 
     if (!hadithNumber) {
       setToast({ message: "Please Enter Hadith no.", type: "error", });
+      return;
+    }
+    if(!hadithTitle){
+      alert("Please Enter Hadith Title");
       return;
     }
 
@@ -114,6 +120,7 @@ export const HadithDashboard = () => {
           bookId: selectedHadithBook,
           chapterId: selectedHadithChapter,
           hadithNumber: Number(hadithNumber),
+          hadithTitle,
           arabic,
           urdu,
           english,
@@ -138,6 +145,7 @@ export const HadithDashboard = () => {
       }
 
       setHadithNumber("");
+      setHadithTitle("")
       setArabic("");
       setUrdu("");
       setEnglish("");
@@ -168,6 +176,7 @@ export const HadithDashboard = () => {
     }
 
     setHadithNumber(selectedHadith.hadithNumber);
+    setHadithTitle(selectedHadith.hadithTitle);
     setArabic(selectedHadith.arabic);
     setUrdu(selectedHadith.urdu);
     setEnglish(selectedHadith.english);
@@ -202,6 +211,10 @@ export const HadithDashboard = () => {
       alert("Please enter hadith number");
       return;
     }
+    if(!hadithTitle){
+      alert("Please enter Hadith Title");
+      return;
+    }
 
     if (!arabic.trim()) {
       alert("Please enter Arabic Hadith");
@@ -232,6 +245,7 @@ export const HadithDashboard = () => {
             bookId: selectedHadithBook,
             chapterId: selectedHadithChapter,
             hadithNumber: Number(hadithNumber),
+            hadithTitle,
             arabic,
             urdu,
             english,
@@ -263,6 +277,7 @@ export const HadithDashboard = () => {
       setChapters([]);
 
       setHadithNumber("");
+      setHadithTitle("");
       setArabic("");
       setUrdu("");
       setEnglish("");
@@ -410,6 +425,19 @@ export const HadithDashboard = () => {
               onChange={(e) => setHadithNumber(e.target.value)}
               placeholder="Enter hadith number"
               className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+            />
+          </div>
+          <div className="mt-5">
+            <label className="block text-sm font-medium text-gray-700">
+              Hadith Title
+            </label>
+            <input
+            type="text"
+            value={hadithTitle}
+            disabled={!hadithNumber}
+            onChange={(e)=>setHadithTitle(e.target.value)}
+            placeholder="Enter Hadith title"
+            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
             />
           </div>
           <div className="mt-5">
@@ -651,6 +679,19 @@ export const HadithDashboard = () => {
               onChange={(e) => setHadithNumber(e.target.value)}
               placeholder="Enter hadith number"
               className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+            />
+          </div>
+           <div className="mt-5">
+            <label className="block text-sm font-medium text-gray-700">
+              Hadith Title
+            </label>
+            <input
+            type="text"
+            value={hadithTitle}
+            disabled={!hadithNumber}
+            onChange={(e)=>setHadithTitle(e.target.value)}
+            placeholder="Enter Hadith title"
+            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
             />
           </div>
 
