@@ -3,16 +3,37 @@ import { Toast } from "../../Components/Toast";
 
 export const BookDashboaard = () => {
   const [books, setBooks] = useState([]);
+
+  // Form visibility
   const [showBookForm, setShowBookForm] = useState(false);
-  const [bookTitle, setBookTitle] = useState("");
-  const [selectedUpdateBook, setSelectedUpdateBook] = useState("");
   const [showUpdateBookForm, setShowUpdateBookForm] = useState(false);
+
+  // Book fields
+  const [bookTitle, setBookTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [aboutBook, setAboutBook] = useState("");
+  const [aboutAuthor, setAboutAuthor] = useState("");
+
+  // Update states
+  const [selectedUpdateBook, setSelectedUpdateBook] = useState("");
+
   const [toast, setToast] = useState(null);
+
+  // Reset Form
+  const resetForm = () => {
+    setBookTitle("");
+    setAuthor("");
+    setAboutBook("");
+    setAboutAuthor("");
+  };
 
   // Fetch Books
   const fetchBooks = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/books`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/books`
+      );
+
       const data = await response.json();
 
       if (response.ok) {
@@ -36,17 +57,23 @@ export const BookDashboaard = () => {
 
     try {
       const token = sessionStorage.getItem("adminToken");
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/books`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          title: bookTitle.trim(),
-        }),
-      });
-      console.log("BOOK RESPONSE STATUS:", response.status);
+
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/books`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            title: bookTitle.trim(),
+            author: author.trim(),
+            aboutBook: aboutBook.trim(),
+            aboutAuthor: aboutAuthor.trim(),
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -55,7 +82,7 @@ export const BookDashboaard = () => {
         return;
       }
 
-      setBookTitle("");
+      resetForm();
       setShowBookForm(false);
       fetchBooks();
 
@@ -72,7 +99,7 @@ export const BookDashboaard = () => {
   // Cancel Add Book
   const handleCancelBookForm = () => {
     setShowBookForm(false);
-    setBookTitle("");
+    resetForm();
   };
 
   // Select Book for Update
@@ -82,9 +109,12 @@ export const BookDashboaard = () => {
     const selectedBook = books.find((book) => book._id === bookId);
 
     if (selectedBook) {
-      setBookTitle(selectedBook.title);
+      setBookTitle(selectedBook.title || "");
+      setAuthor(selectedBook.author || "");
+      setAboutBook(selectedBook.aboutBook || "");
+      setAboutAuthor(selectedBook.aboutAuthor || "");
     } else {
-      setBookTitle("");
+      resetForm();
     }
   };
 
@@ -101,17 +131,21 @@ export const BookDashboaard = () => {
     }
 
     try {
-      const token= sessionStorage.getItem("adminToken");
+      const token = sessionStorage.getItem("adminToken");
+
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/api/books/${selectedUpdateBook}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization:`Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             title: bookTitle.trim(),
+            author: author.trim(),
+            aboutBook: aboutBook.trim(),
+            aboutAuthor: aboutAuthor.trim(),
           }),
         }
       );
@@ -123,7 +157,7 @@ export const BookDashboaard = () => {
         return;
       }
 
-      setBookTitle("");
+      resetForm();
       setSelectedUpdateBook("");
       setShowUpdateBookForm(false);
 
@@ -143,7 +177,7 @@ export const BookDashboaard = () => {
   const handleCancelUpdateBook = () => {
     setShowUpdateBookForm(false);
     setSelectedUpdateBook("");
-    setBookTitle("");
+    resetForm();
   };
 
   return (
@@ -158,17 +192,19 @@ export const BookDashboaard = () => {
         />
       )}
 
+      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Books</h2>
         </div>
 
         <div className="flex gap-3">
+
           {/* ADD */}
           <button
             className="rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-green-800"
             onClick={() => {
-              setBookTitle("");
+              resetForm();
               setShowBookForm(true);
               setShowUpdateBookForm(false);
             }}
@@ -180,7 +216,7 @@ export const BookDashboaard = () => {
           <button
             className="rounded-lg border border-green-200 px-5 py-2.5 text-sm font-medium text-green-700 transition hover:bg-green-50"
             onClick={() => {
-              setBookTitle("");
+              resetForm();
               setShowBookForm(false);
               setSelectedUpdateBook("");
               setShowUpdateBookForm(true);
@@ -188,12 +224,14 @@ export const BookDashboaard = () => {
           >
             Update
           </button>
+
         </div>
       </div>
 
       {/* ADD FORM */}
       {showBookForm && (
         <div className="mt-6 rounded-xl border border-green-100 bg-white p-6 shadow-sm">
+
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">
               Add New Book
@@ -207,6 +245,7 @@ export const BookDashboaard = () => {
             </button>
           </div>
 
+          {/* Book Title */}
           <label className="mt-5 block text-sm font-medium text-gray-700">
             Book Title
           </label>
@@ -219,6 +258,46 @@ export const BookDashboaard = () => {
             className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
           />
 
+          {/* Author */}
+          <label className="mt-5 block text-sm font-medium text-gray-700">
+            Author
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enter author name"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+          />
+
+          {/* About Book */}
+          <label className="mt-5 block text-sm font-medium text-gray-700">
+            About Book
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enter about book"
+            value={aboutBook}
+            onChange={(e) => setAboutBook(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+          />
+
+          {/* About Author */}
+          <label className="mt-5 block text-sm font-medium text-gray-700">
+            About Author
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enter about author"
+            value={aboutAuthor}
+            onChange={(e) => setAboutAuthor(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+          />
+
+          {/* Buttons */}
           <div className="mt-5 flex justify-end gap-3">
             <button
               onClick={handleCancelBookForm}
@@ -234,12 +313,14 @@ export const BookDashboaard = () => {
               Submit
             </button>
           </div>
+
         </div>
       )}
 
       {/* UPDATE FORM */}
       {showUpdateBookForm && (
         <div className="mt-6 rounded-xl border border-green-100 bg-white p-6 shadow-sm">
+
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">
               Update Existing Book
@@ -253,6 +334,7 @@ export const BookDashboaard = () => {
             </button>
           </div>
 
+          {/* Select Book */}
           <label className="mt-5 block text-sm font-medium text-gray-700">
             Select Book
           </label>
@@ -271,6 +353,7 @@ export const BookDashboaard = () => {
             ))}
           </select>
 
+          {/* Book Title */}
           <label className="mt-5 block text-sm font-medium text-gray-700">
             Book Title
           </label>
@@ -283,6 +366,46 @@ export const BookDashboaard = () => {
             className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
           />
 
+          {/* Author */}
+          <label className="mt-5 block text-sm font-medium text-gray-700">
+            Author
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enter author name"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+          />
+
+          {/* About Book */}
+          <label className="mt-5 block text-sm font-medium text-gray-700">
+            About Book
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enter about book"
+            value={aboutBook}
+            onChange={(e) => setAboutBook(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+          />
+
+          {/* About Author */}
+          <label className="mt-5 block text-sm font-medium text-gray-700">
+            About Author
+          </label>
+
+          <input
+            type="text"
+            placeholder="Enter about author"
+            value={aboutAuthor}
+            onChange={(e) => setAboutAuthor(e.target.value)}
+            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+          />
+
+          {/* Buttons */}
           <div className="mt-5 flex justify-end gap-3">
             <button
               onClick={handleCancelUpdateBook}
@@ -298,8 +421,10 @@ export const BookDashboaard = () => {
               Update Book
             </button>
           </div>
+
         </div>
       )}
+
     </div>
   );
 };

@@ -23,7 +23,7 @@ export const Books = () => {
       try {
         const response = await fetch(
           `${process.env.REACT_APP_API_URL}/api/books`,
-          { signal: controller.signal }
+          { signal: controller.signal },
         );
 
         if (!response.ok) {
@@ -42,7 +42,7 @@ export const Books = () => {
         setError(
           timedOut
             ? "Server is taking too long to respond. Please try again."
-            : "Unable to load books. Please check your connection and try again."
+            : "Unable to load books. Please check your connection and try again.",
         );
       } finally {
         clearTimeout(timeout);
@@ -91,16 +91,15 @@ export const Books = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <section className="border-b border-gray-100 bg-white">
+    <div className="min-h-screen bg-white">
+      <section className=" bg-[#385d50]">
         <div className="mx-auto max-w-7xl px-6 py-14 text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 md:text-5xl">
-            Islamic Books
+          <h1 className="text-4xl font-bold tracking-tight text-white md:text-6xl">
+            Books
           </h1>
 
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-500">
-            Explore Islamic books and increase your knowledge through
-            reliable sources.
+          <p className="mx-auto py-4 mt-4 max-w-2xl text-base leading-7 font-semibold  text-white text-xxl md:text-2xl">
+            Discover a collection of Hadith books. Explore chapters, read translations, and gain a deeper understanding of Islamic teachings through a simple and accessible reading experience.
           </p>
         </div>
       </section>
@@ -117,41 +116,36 @@ export const Books = () => {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mx-2 md:mx-8 grid gap-6 grid-cols-2 md:grid-cols-3">
             {books.map((book, index) => (
-              <Link
-                to={`/books/${book._id}/chapters`}
-                key={book._id}
-                className="group cursor-pointer rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-green-200 hover:shadow-lg"
-              >
-                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-green-50 text-2xl transition group-hover:bg-green-700">
-                  <span className="transition group-hover:grayscale group-hover:brightness-0 group-hover:invert">
-                    📖
-                  </span>
-                </div>
+ <Link
+  to={`/books/${book._id}/chapters`}
+  key={book._id}
+  className="group mt-4 block cursor-pointer transition duration-300 hover:-translate-y-2"
+>
+  <div className="mx-auto w-full max-w-[320px] sm:max-w-[280px]">
 
-                <p className="text-xs font-semibold uppercase tracking-wider text-green-700">
-                  Book {index + 1}
-                </p>
+    {/* Book */}
+    <div className="relative my-4 flex aspect-[3/4] w-full rounded-r-lg bg-[#203B32] p-2 shadow-[8px_8px_15px_rgba(0,0,0,0.3)] transition-all duration-300 group-hover:shadow-[12px_14px_20px_rgba(0,0,0,0.35)]">
 
-                <h2 className="mt-2 text-xl font-bold text-gray-900 transition group-hover:text-green-700">
-                  {book.title}
-                </h2>
+      {/* Spine */}
+      <div className="relative w-4 shrink-0 rounded-l-sm bg-gradient-to-r from-[#203B32] to-[#385D50] shadow-[inset_-3px_0_5px_rgba(0,0,0,0.3)] sm:w-5"></div>
 
-                <p className="mt-3 text-sm leading-6 text-gray-500">
-                  Read chapters and explore authentic Islamic knowledge.
-                </p>
+      {/* Front Cover */}
+      <div className="relative flex min-w-0 flex-1 flex-col items-center justify-between overflow-hidden rounded-r-md border border-[#F9BF29] bg-gradient-to-br from-[#456F60] to-[#29483D] px-2 py-5 text-center shadow-[inset_2px_0_5px_rgba(255,255,255,0.12)] transition-all duration-300 group-hover:border-[#F9BF29]">
 
-                <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
-                  <span className="text-sm font-medium text-gray-500">
-                    Explore book
-                  </span>
+        <h3 className="my-auto w-full break-words text-base font-bold text-[#F9BF29] sm:text-2xl md:text-3xl">
+          {book.title}
+        </h3>
 
-                  <span className="text-lg text-green-700 transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
-                </div>
-              </Link>
+        <p className="mt-auto text-xs font-medium text-[#F9BF29] sm:text-base md:text-lg">
+          {book.author}
+        </p>
+
+      </div>
+    </div>
+  </div>
+</Link>
             ))}
           </div>
         )}

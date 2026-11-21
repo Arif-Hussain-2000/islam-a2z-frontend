@@ -1,178 +1,123 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import Image from "../Assets/logo.png";
+import logo from "../Assets/logo.png";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const navClass = ({ isActive }) =>
+    `relative px-4 py-2 text-md font-medium text-white
+    after:absolute after:bottom-0 after:left-4 after:right-4
+    after:h-[4px] after:bg-[#F9BF29] after:transition-transform
+    ${
+      isActive ? "after:scale-x-100" : "after:scale-x-0 hover:after:scale-x-100"
+    }`;
+
   return (
-    <header className="bg-white border-b border-gray-100 shadow-sm">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link
-          to="/"
-          className="flex items-center gap-3 text-xl font-bold tracking-wide text-[#2b726e]"
-        >
-          <img
-            src={Image}
-            alt="Islam A2Z"
-            className="h-9 w-9 object-contain sm:h-10 sm:w-10"
-          />
+    <header className="bg-[#385D50] ">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
+        {/* Desktop Navigation */}
 
-          <span className="text-lg sm:text-xl text-green-700">ISLAM A2Z</span>
-        </Link>
-
-        <nav className="hidden items-center gap-2 md:flex">
-          <NavLink
+        <nav className="hidden h-[72px] w-full grid-cols-[1fr_auto_1fr] items-center px-20 md:grid">
+          {/* Logo */}
+          <Link
             to="/"
-            className={({ isActive }) =>
-              `rounded-md px-4 py-2 text-sm font-medium transition ${
-                isActive
-                  ? "bg-green-700 text-white"
-                  : "text-gray-700 hover:bg-green-700 hover:text-white"
-              }`
-            }
+            className="justify-self-start text-xl font-bold tracking-wide text-white"
           >
-            Home
-          </NavLink>
+              <img src={logo} alt="Islam A2Z Logo" className="h-16 w-30 object-contain" />
 
-          <NavLink
-            to="/about"
-            className={({ isActive }) =>
-              `rounded-md px-4 py-2 text-sm font-medium transition ${
-                isActive
-                  ? "bg-green-700 text-white"
-                  : "text-gray-700 hover:bg-green-700 hover:text-white"
-              }`
-            }
-          >
-            About
-          </NavLink>
+          </Link>
 
-          <NavLink
-            to="/connect"
-            className={({ isActive }) =>
-              `rounded-md px-4 py-2 text-sm font-medium transition ${
-                isActive
-                  ? "bg-green-700 text-white"
-                  : "text-gray-700 hover:bg-green-700 hover:text-white"
-              }`
-            }
-          >
-            Connect
-          </NavLink>
+          {/* Center Navigation */}
+          <div className="flex items-center justify-center gap-2">
+            <NavLink to="/" className={navClass}>
+              Home
+            </NavLink>
 
-          <NavLink
-            to="/books"
-            className={({ isActive }) =>
-              `rounded-md px-4 py-2 text-sm font-medium transition ${
-                isActive
-                  ? "bg-green-700 text-white"
-                  : "text-gray-700 hover:bg-green-700 hover:text-white"
-              }`
-            }
-          >
-            Books
-          </NavLink>
+            <NavLink to="/feature" className={navClass}>
+              Features
+            </NavLink>
 
-          <NavLink
-            to="/admin"
-            className={({ isActive }) =>
-              `rounded-md px-4 py-2 text-sm font-medium transition ${
-                isActive
-                  ? "bg-green-700 text-white"
-                  : "text-gray-700 hover:bg-green-700 hover:text-white"
-              }`
-            }
-          >
-            Admin
-          </NavLink>
+            <NavLink to="/course" className={navClass}>
+              Courses
+            </NavLink>
+
+            <NavLink to="/books" className={navClass}>
+              Books
+            </NavLink>
+          </div>
+
+          {/* Admin */}
+          <div className="justify-self-end">
+            <Link
+              to="/admin"
+              className="ml-4 text-white hover:text-[#F9BF29]"
+            >
+              <i className="bi bi-person text-xl"></i>
+            </Link>
+          </div>
         </nav>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Header */}
 
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="rounded-md p-2 text-gray-700 transition hover:bg-gray-800 hover:text-white md:hidden"
-          aria-label="Toggle menu"
-        >
-          {menuOpen ? "✕" : "☰"}
-        </button>
+        <div className="flex h-[72px] items-center justify-between md:hidden px-10">
+          <Link to="/" className="text-xl font-bold tracking-wide text-white">
+              <img src={logo} alt="Islam A2Z Logo" className="h-12 w-auto object-contain" />
+          </Link>
+
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="rounded-md p-2 text-white transition hover:bg-[#456F60]"
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? "✕" : "☰"}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}
 
       {menuOpen && (
-        <nav className="border-t border-gray-100 bg-white px-6 pb-4 md:hidden shadow-sm">
+        <nav className="bg-[#385D50] px-6 pb-4  md:hidden ">
           <div className="flex flex-col gap-1 pt-3">
             <NavLink
               to="/"
               onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `rounded-md px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-green-700 text-white"
-                    : "text-gray-700 hover:bg-green-700 hover:text-white"
-                }`
-              }
+              className={navClass}
             >
               Home
             </NavLink>
 
             <NavLink
-              to="/about"
+              to="/feature"
               onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `rounded-md px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-green-700 text-white"
-                    : "text-gray-700 hover:bg-green-700 hover:text-white"
-                }`
-              }
+              className={navClass}
             >
-              About
+              Features
             </NavLink>
 
             <NavLink
               to="/connect"
               onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `rounded-md px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-green-700 text-white"
-                    : "text-gray-700 hover:bg-green-700 hover:text-white"
-                }`
-              }
+              className={navClass}
             >
-              Connect
+              Courses
             </NavLink>
 
             <NavLink
               to="/books"
               onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `rounded-md px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-green-700 text-white"
-                    : "text-gray-700 hover:bg-green-700 hover:text-white"
-                }`
-              }
+              className={navClass}
             >
               Books
             </NavLink>
-
-            <NavLink
-              to="/admin"
-              onClick={() => setMenuOpen(false)}
-              className={({ isActive }) =>
-                `rounded-md px-4 py-2 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-green-700 text-white"
-                    : "text-gray-700 hover:bg-green-700 hover:text-white"
-                }`
-              }
+             <Link
+              to="/profile"
+              className="ml-4 text-white hover:text-[#F9BF29]"
             >
-              Admin
-            </NavLink>
+              <i className="bi bi-person text-xl"></i>
+            </Link>
           </div>
         </nav>
       )}

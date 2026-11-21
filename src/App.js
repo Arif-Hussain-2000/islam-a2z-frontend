@@ -1,6 +1,6 @@
 import { Home } from "./Pages/Home";
-import { About } from "./Pages/About";
-import { Connect } from "./Pages/Connect";
+import { Feature } from "./Pages/Feature";
+import { Courses } from "./Pages/Courses";
 import { Books } from "./Pages/Books";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import { AppLayout } from "./AppLayout/AppLayout";
@@ -25,16 +25,16 @@ path:"/books/hadith",
 element:<Hadith/> 
 },
 {
-path:"about",
-element:<About/> 
+path:"feature",
+element:<Feature/> 
 },
 {
 path:"books",
 element:<Books/> 
 },
 {
-path:"connect",
-element:<Connect />
+path:"course",
+element:<Courses />
 },
 {
   path:"admin",

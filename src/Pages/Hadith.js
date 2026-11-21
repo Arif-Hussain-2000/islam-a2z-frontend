@@ -1,11 +1,13 @@
+
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export const Hadith = () => {
   const [searchParams] = useSearchParams();
   const searchNumber = searchParams.get("hadithNumber");
-  const { chapterId, bookId } = useParams();
-  const navigate = useNavigate();
+  const { chapterId } = useParams();
+
+  const [activeTab, setActiveTab] = useState(1);
 
   const [hadiths, setHadiths] = useState([]);
   const [chapter, setChapter] = useState(null);
@@ -13,17 +15,14 @@ export const Hadith = () => {
   const [error, setError] = useState("");
 
   const [language, setLanguage] = useState("urdu");
-
-  const [openNarrator, setOpenNarrator] = useState(null);
-  const [openExplanation, setOpenExplanation] = useState(null);
-
   const [currentHadithIndex, setCurrentHadithIndex] = useState(0);
+  const [lightMode, setLightMode] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const hadithResponse = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/hadiths?chapterId=${chapterId}`,
+          `${process.env.REACT_APP_API_URL}/api/hadiths?chapterId=${chapterId}`
         );
 
         if (!hadithResponse.ok) {
@@ -35,7 +34,7 @@ export const Hadith = () => {
 
         if (searchNumber) {
           const foundIndex = hadithData.findIndex(
-            (hadith) => hadith.hadithNumber === Number(searchNumber),
+            (hadith) => hadith.hadithNumber === Number(searchNumber)
           );
 
           if (foundIndex !== -1) {
@@ -44,7 +43,7 @@ export const Hadith = () => {
         }
 
         const chapterResponse = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/chapters/${chapterId}`,
+          `${process.env.REACT_APP_API_URL}/api/chapters/${chapterId}`
         );
 
         if (!chapterResponse.ok) {
@@ -52,7 +51,6 @@ export const Hadith = () => {
         }
 
         const chapterData = await chapterResponse.json();
-
         setChapter(chapterData);
       } catch (error) {
         console.log("Error fetching data:", error);
@@ -86,100 +84,137 @@ export const Hadith = () => {
 
   const currentHadith = hadiths[currentHadithIndex];
 
-  return (
-    <main className="min-h-screen bg-white py-10 md:py-14">
-      <div className="mx-auto max-w-5xl px-2 md:px-8">
-        <div className="mb-5 flex justify-between">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate(`/books/${bookId}/chapters`)}
-            className="mb-8 inline-flex  items-center gap-2 rounded-xl  bg-green-800 px-7 py-4  text-xsm font-medium text-white shadow-sm transition duration-300  hover:bg-green-900 md:text-sm"
-          >
-            <span className="text-sm md:text-xl">←</span>
-            Back
-          </button>
-          {/* Language Selector */}
-          <div className="mb-5 flex justify-center p-1.5">
-            <div className="rounded-2xl  bg-white shadow-sm">
-              <div className="flex gap-1">
-                <button
-                  onClick={() => setLanguage("urdu")}
-                  className={` rounded-xl px-4 py-2 md:px-7 md:py-4 text-xsm md:text-sm font-semibold transition duration-300 ${
-                    language === "urdu"
-                      ? "bg-green-800 text-white shadow-md"
-                      : "text-gray-900 hover:bg-green-50 hover:text-green-700"
-                  }`}
-                >
-                  Urd
-                </button>
+  const readingBg = lightMode ? "bg-[#F5F5F5]" : "bg-[#ede6d3]";
+  const cardBorder = lightMode ? "border-gray-200" : "border-black";
+  const readingText = lightMode ? "text-gray-800" : "text-black";
 
-                <button
-                  onClick={() => setLanguage("english")}
-                  className={`rounded-xl px-4 py-2 md:px-7 md:py-4 text-xsm md:text-sm font-semibold transition duration-300 ${
-                    language === "english"
-                      ? "bg-green-800 text-white shadow-md"
-                      : "text-gray-900 hover:bg-green-50 hover:text-green-700"
-                  }`}
-                >
-                  Eng
-                </button>
-              </div>
+  return (
+    <main className="min-h-screen bg-[#385d50]">
+      {/* Header */}
+      <section className="bg-[#385d50]">
+        <div className="mx-auto max-w-7xl px-6 py-14 text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-white md:text-6xl">
+            Hadith
+          </h1>
+
+          <p className="mx-auto mt-4 max-w-2xl py-4 text-base font-semibold leading-7 text-white md:text-2xl">
+            Total Number of Hadith: {hadiths.length}
+          </p>
+
+          <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
+            Chapter: {chapter?.title}
+          </h2>
+        </div>
+
+        {/* Language Selector */}
+        <div className="mb-5 flex justify-center p-1.5">
+          <div className="bg-[#385d50]">
+            <div className="flex gap-1">
+              <button
+                onClick={() => setLanguage("urdu")}
+                className={`px-4 py-2 text-xs font-semibold transition duration-300 md:px-7 md:py-4 md:text-sm ${
+                  language === "urdu"
+                    ? "border-b-4 border-[#f9bf29] bg-[#385d50] font-bold text-[#f9bf29]"
+                    : "bg-[#385d50] font-bold text-white"
+                }`}
+              >
+                URD
+              </button>
+
+              <button
+                onClick={() => setLanguage("english")}
+                className={`px-4 py-2 text-xs font-semibold transition duration-300 md:px-7 md:py-4 md:text-sm ${
+                  language === "english"
+                    ? "border-b-4 border-[#f9bf29] bg-[#385d50] font-bold text-[#f9bf29]"
+                    : "bg-[#385d50] font-bold text-white"
+                }`}
+              >
+                ENG
+              </button>
+
+              <button
+                onClick={() => setLanguage("arabic")}
+                className={`px-4 py-2 text-xs font-semibold transition duration-300 md:px-7 md:py-4 md:text-sm ${
+                  language === "arabic"
+                    ? "border-b-4 border-[#f9bf29] bg-[#385d50] font-bold text-[#f9bf29]"
+                    : "bg-[#385d50] font-bold text-white"
+                }`}
+              >
+                ROMAN
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Chapter Header */}
-        <div className="relative mb-10 overflow-hidden rounded-3xl border border-green-100 bg-gradient-to-br from-green-900 via-green-800 to-green-700 px-6 py-10 text-center shadow-lg md:px-10">
-          <div className="relative">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-green-200">
-              Chapter {chapter?.chapterNumber}
-            </p>
+        {/* Reading Mode Toggle */}
+        <div className="mb-6 flex justify-center">
+          <button
+            onClick={() => setLightMode(!lightMode)}
+            className="flex items-center gap-2 rounded-full border border-[#f9bf29] px-5 py-2 text-sm font-medium text-white transition duration-300 hover:bg-[#f9bf29] hover:text-[#385d50]"
+          >
+            <i
+              className={`bi ${
+                lightMode ? "bi-moon-stars" : "bi-sun"
+              }`}
+            ></i>
 
-            <h1 className="text-2xl font-bold text-white md:text-4xl">
-              {chapter?.title}
-            </h1>
-          </div>
+            {lightMode ? "Default Mode" : "Light Mode"}
+          </button>
         </div>
-        <div className="flex flex-nowrap overflow-x-auto gap-2 whitespace-nowrap ">
-         {hadiths.map((hadith, index) => (
-  <button
-    key={hadith._id || index}
-    className={`shrink-0 rounded-lg border px-5 py-3 text-sm md:text-lg font-semibold mb-4${
-      currentHadithIndex === index
-      ?" px-5 py-3 bg-green-800 text-white":" px-5 py-3 bg-white text-black"
-    }`}
-    onClick={()=>{
-      setCurrentHadithIndex(index);
-    }}
-  >
-    {hadith.hadithNumber}
-  </button>
-))}
-          
+      </section>
+
+      <div
+        className={`mx-auto max-w-5xl px-2 py-2 transition-colors duration-300 md:px-8 ${readingBg}`}
+      >
+        {/* Hadith Number Buttons */}
+        <div
+          className="flex flex-nowrap gap-2 overflow-x-auto whitespace-nowrap"
+          dir="rtl"
+        >
+          {hadiths.map((hadith, index) => (
+            <button
+              key={hadith._id || index}
+              className={`mb-4 shrink-0 rounded-lg border px-5 py-3 text-sm font-semibold transition duration-300 md:text-lg ${
+                currentHadithIndex === index
+                  ? "border-4 border-[#f9bf29] bg-[#385d50] font-extrabold text-[#f9bf29]"
+                  : "bg-[#385d50] font-bold text-white hover:border-[#385d50]"
+              }`}
+              onClick={() => {
+                setCurrentHadithIndex(index);
+                setActiveTab(1);
+              }}
+            >
+              {hadith.hadithNumber}
+            </button>
+          ))}
         </div>
 
-        {/* Hadith */}
+        {/* Hadith Content */}
         <div>
           {currentHadith && (
-            <article className="overflow-hidden rounded-xl   bg-white ">
+            <article
+              className={`overflow-hidden transition-colors duration-300 ${readingBg}`}
+            >
               {/* Hadith Header */}
-              <div className="flex items-center justify-center border-b border-green-50 bg-green-800 px-5 py-4 md:px-7">
-                <div className="flex items-center gap-3">
-                  <div >
-                    <p className="text-xl md:text-2xl font-bold text-white urdu-text">
-                      {currentHadith.hadithTitle}
-                    </p>
-                  </div>
-                </div>
+              <div className="flex items-center justify-center bg-[#385d50] px-5 py-4 md:px-7">
+                <p className="text-center text-xl font-bold text-white urdu-text md:text-2xl">
+                  {currentHadith.hadithTitle}
+                </p>
               </div>
 
               <div className="p-5 md:p-8">
-                <div className="grid md:grid-cols-2 items-start  gap-4" style={{direction:"rtl"}}>
+                {/* Arabic and Translation */}
+                <div
+                  className="grid items-start gap-4 md:grid-cols-2"
+                  style={{ direction: "rtl" }}
+                >
                   {/* Arabic */}
-                  <div className="w-full min-w-0 relative mb-2 overflow-hidden rounded-xl border border-gray-100 px-2 py-2 text-center md:px-4 md:py-10">
+                  <div
+                    className={`relative mb-2 w-full min-w-0 overflow-hidden rounded-xl border px-2 py-2 text-center transition-colors duration-300 md:px-4 md:py-10 ${cardBorder} ${readingBg}`}
+                  >
                     <p
                       dir="rtl"
-                      className="text-justify arabic-text relative text-right text-2xl leading-[2] text-gray-900 font-semibold md:text-3xl"
+                      className={`relative text-right text-2xl font-normal leading-[2.2] arabic-text md:text-3xl ${readingText}`}
                     >
                       {currentHadith.arabic}
                     </p>
@@ -187,13 +222,17 @@ export const Hadith = () => {
 
                   {/* Translation */}
                   <div className="mb-2">
-                    <div className="w-full min-w-0 rounded-2xl border text-center border-gray-100  bg-white px-2 py-10 md:px-10">
+                    <div
+                      className={`w-full min-w-0 rounded-2xl border px-2 py-10 text-center transition-colors duration-300 md:px-10 ${cardBorder} ${readingBg}`}
+                    >
                       <p
                         dir={language === "urdu" ? "rtl" : "ltr"}
-                        className={`${
-                          language === "urdu" ? "urdu-text" : ""
-                        } text-2xl leading-9 text-gray-900 text-justify  md:text-3xl ${
-                          language === "urdu" ? "text-right" : "text-left"
+                        className={`text-justify text-lg leading-9 transition-colors duration-300 md:text-xl ${
+                          lightMode ? "text-gray-700" : "text-gray-900"
+                        } ${
+                          language === "urdu"
+                            ? "urdu-text text-right"
+                            : "text-left"
                         }`}
                       >
                         {language === "urdu"
@@ -204,94 +243,76 @@ export const Hadith = () => {
                   </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-wrap gap-3 pt-6">
-                  <button
-                    onClick={() =>
-                      setOpenNarrator(
-                        openNarrator === currentHadith._id
-                          ? null
-                          : currentHadith._id,
-                      )
-                    }
-                    className={`urdu-text rounded-xl border px-4 py-2.5 text-sm font-semibold transition duration-300 ${
-                      openNarrator === currentHadith._id
-                        ? "border-green-800 bg-green-800 text-white"
-                        : "border-green-800 bg-green-800 text-white hover:bg-green-900"
-                    }`}
-                  >
-                    {openNarrator === currentHadith._id
-                      ? "Hide Grade"
-                      : "Show Grade"}
-                  </button>
+                {/* Grade & Explanation Tabs */}
+                <div
+                  className={`mx-auto mt-6 max-w-3xl transition-colors duration-300 ${readingBg}`}
+                >
+                  {/* Tab Buttons */}
+                  <div className="flex border-b border-gray-200">
+                    <button
+                      onClick={() => setActiveTab(1)}
+                      className={`w-1/2 p-4 font-semibold transition duration-300 urdu-text ${
+                        activeTab === 1
+                          ? "border-b-4 border-[#f9bf29] bg-[#385d50] text-[#f9bf29]"
+                          : "bg-[#385d50] font-bold text-white"
+                      }`}
+                    >
+                      {language === "urdu" ? "صحتِ حدیث" : "Grade"}
+                    </button>
 
-                  <button
-                    onClick={() =>
-                      setOpenExplanation(
-                        openExplanation === currentHadith._id
-                          ? null
-                          : currentHadith._id,
-                      )
-                    }
-                    className={`urdu-text rounded-xl border px-4 py-2.5 text-sm font-semibold transition duration-300 ${
-                      openExplanation === currentHadith._id
-                        ? "border-green-800 bg-green-800 text-white"
-                        : "border-green-800 bg-green-800 text-white hover:bg-green-900"
-                    }`}
+                    <button
+                      onClick={() => setActiveTab(2)}
+                      className={`w-1/2 p-4 font-semibold transition duration-300 urdu-text ${
+                        activeTab === 2
+                          ? "border-b-4 border-[#f9bf29] bg-[#385d50] text-[#f9bf29]"
+                          : "bg-[#385d50] font-bold text-white"
+                      }`}
+                    >
+                      {language === "urdu" ? "شرح حدیث" : "Explanation"}
+                    </button>
+                  </div>
+
+                  {/* Tab Content */}
+                  <div
+                    className={`min-h-[120px] rounded-b-xl border p-5 transition-colors duration-300 md:p-6 ${cardBorder} ${readingBg}`}
                   >
-                    {openExplanation === currentHadith._id
-                      ? "Hide Explanation"
-                      : "Explanation"}
-                  </button>
+                    {/* Grade */}
+                    {activeTab === 1 && (
+                      <div>
+                        <p
+                          dir={language === "urdu" ? "rtl" : "ltr"}
+                          className={`whitespace-pre-wrap text-justify text-lg font-normal leading-8 transition-colors duration-300 md:text-xl ${
+                            language === "urdu"
+                              ? "urdu-text text-right"
+                              : "text-left"
+                          } ${readingText}`}
+                        >
+                          {language === "urdu"
+                            ? currentHadith.narrator?.urdu
+                            : currentHadith.narrator?.english}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Explanation */}
+                    {activeTab === 2 && (
+                      <div>
+                        <p
+                          dir={language === "urdu" ? "rtl" : "ltr"}
+                          className={`whitespace-pre-wrap text-justify text-lg font-normal leading-8 transition-colors duration-300 md:text-xl ${
+                            language === "urdu"
+                              ? "urdu-text text-right"
+                              : "text-left"
+                          } ${readingText}`}
+                        >
+                          {language === "urdu"
+                            ? currentHadith.explanation?.urdu
+                            : currentHadith.explanation?.english}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-
-                {/* Narrator */}
-                {openNarrator === currentHadith._id && (
-                  <div className="mt-5 rounded-2xl border border-gray-100 whitespace-pre-wrap bg-white p-5 md:p-6">
-                    <div
-                      className={`mb-3 font-semibold text-green-800 ${
-                        language === "urdu" ? "urdu-text" : ""
-                      }`}
-                    ></div>
-
-                    <p
-                      dir={language === "urdu" ? "rtl" : "ltr"}
-                      className={`${
-                        language === "urdu" ? "urdu-text" : ""
-                      } text-base leading-8 text-justify text-gray-900 ${
-                        language === "urdu" ? "text-right" : "text-left"
-                      }`}
-                    >
-                      {language === "urdu"
-                        ? currentHadith.narrator?.urdu
-                        : currentHadith.narrator?.english}
-                    </p>
-                  </div>
-                )}
-
-                {/* Explanation */}
-                {openExplanation === currentHadith._id && (
-                  <div className="mt-5 rounded-2xl border border-gray-100 bg-white p-5 md:p-6">
-                    <div
-                      className={`mb-3 font-semibold whitespace-pre-wrap text-gray-900 ${
-                        language === "urdu" ? "urdu-text" : ""
-                      }`}
-                    ></div>
-
-                    <p
-                      dir={language === "urdu" ? "rtl" : "ltr"}
-                      className={`${
-                        language === "urdu" ? "urdu-text" : ""
-                      } text-base text-justify whitespace-pre-wrap leading-8 text-gray-900 ${
-                        language === "urdu" ? "text-right" : "text-left"
-                      }`}
-                    >
-                      {language === "urdu"
-                        ? currentHadith.explanation?.urdu
-                        : currentHadith.explanation?.english}
-                    </p>
-                  </div>
-                )}
               </div>
             </article>
           )}
@@ -299,7 +320,9 @@ export const Hadith = () => {
 
         {/* No Hadith */}
         {hadiths.length === 0 && (
-          <div className="rounded-2xl border border-green-100 bg-white p-10 text-center shadow-sm">
+          <div
+            className={`rounded-2xl border border-green-100 p-10 text-center shadow-sm ${readingBg}`}
+          >
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-50 text-green-700">
               📖
             </div>
