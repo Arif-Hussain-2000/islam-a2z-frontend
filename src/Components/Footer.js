@@ -84,7 +84,7 @@ export const Footer = () => {
         {/* Bottom */}
 
         <div className="mt-10 flex flex-col gap-3 border-t border-[#385d50] pt-6 text-sm text-[#385d50] md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Islam A2Z. All rights reserved.Designed by @arif_hussain</p>
+          <p>© {new Date().getFullYear()} Islam A2Z. All rights reserved.Designed by <a href="https://www.instagram.com/aaqeeb_visuals?avpt=bzl6M2l0NndqZnB1">aaqeeb_visuals</a></p>
 
           <a href="/" className="transition text-[#385d50] hover:text-[#385d50] hover:font-bold">Privacy Policy</a>
         </div>
