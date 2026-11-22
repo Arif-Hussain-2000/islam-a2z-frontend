@@ -134,11 +134,11 @@ export const Books = () => {
       {/* Front Cover */}
       <div className="relative flex min-w-0 flex-1 flex-col items-center justify-between overflow-hidden rounded-r-md border border-[#F9BF29] bg-gradient-to-br from-[#456F60] to-[#29483D] px-2 py-5 text-center shadow-[inset_2px_0_5px_rgba(255,255,255,0.12)] transition-all duration-300 group-hover:border-[#F9BF29]">
 
-        <h3 className="my-auto w-full break-words text-base font-bold text-[#F9BF29] sm:text-2xl md:text-3xl">
+        <h3 className="my-auto w-full break-words arabic-text text-base font-bold text-[#F9BF29] sm:text-2xl md:text-3xl">
           {book.title}
         </h3>
 
-        <p className="mt-auto text-xs font-medium text-[#F9BF29] sm:text-base md:text-lg">
+        <p className="mt-auto text-xs font-medium text-[#F9BF29] arabic-text sm:text-base md:text-lg">
           {book.author}
         </p>
 

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
@@ -22,7 +21,7 @@ export const Hadith = () => {
     const fetchData = async () => {
       try {
         const hadithResponse = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/hadiths?chapterId=${chapterId}`
+          `${process.env.REACT_APP_API_URL}/api/hadiths?chapterId=${chapterId}`,
         );
 
         if (!hadithResponse.ok) {
@@ -30,11 +29,11 @@ export const Hadith = () => {
         }
 
         const hadithData = await hadithResponse.json();
-        setHadiths(hadithData);
+        setHadiths(hadithData.sort((a, b) => a.hadithNumber - b.hadithNumber));
 
         if (searchNumber) {
           const foundIndex = hadithData.findIndex(
-            (hadith) => hadith.hadithNumber === Number(searchNumber)
+            (hadith) => hadith.hadithNumber === Number(searchNumber),
           );
 
           if (foundIndex !== -1) {
@@ -43,7 +42,7 @@ export const Hadith = () => {
         }
 
         const chapterResponse = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/chapters/${chapterId}`
+          `${process.env.REACT_APP_API_URL}/api/chapters/${chapterId}`,
         );
 
         if (!chapterResponse.ok) {
@@ -98,11 +97,17 @@ export const Hadith = () => {
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl py-4 text-base font-semibold leading-7 text-white md:text-2xl">
-            Total Number of Hadith: {hadiths.length}
+            Total Number of Hadith in this Chapter: {hadiths.length}
           </p>
 
-          <h2 className="text-2xl font-bold tracking-tight text-white md:text-3xl">
-            Chapter: {chapter?.title}
+          <h2
+            className={`text-2xl font-bold tracking-tight text-white md:text-3xl ${language === "urdu" ? "urdu-text" : ""}`}
+          >
+            {language === "urdu"
+              ? chapter.title?.urdu
+              : language === "english"
+                ? chapter.title?.english
+                : chapter.title?.roman}
           </h2>
         </div>
 
@@ -152,11 +157,7 @@ export const Hadith = () => {
             onClick={() => setLightMode(!lightMode)}
             className="flex items-center gap-2 rounded-full border border-[#f9bf29] px-5 py-2 text-sm font-medium text-white transition duration-300 hover:bg-[#f9bf29] hover:text-[#385d50]"
           >
-            <i
-              className={`bi ${
-                lightMode ? "bi-moon-stars" : "bi-sun"
-              }`}
-            ></i>
+            <i className={`bi ${lightMode ? "bi-moon-stars" : "bi-sun"}`}></i>
 
             {lightMode ? "Default Mode" : "Light Mode"}
           </button>
@@ -237,7 +238,9 @@ export const Hadith = () => {
                       >
                         {language === "urdu"
                           ? currentHadith.urdu
-                          : currentHadith.english}
+                          : language === "english"
+                            ? currentHadith.english
+                            : currentHadith.roman}
                       </p>
                     </div>
                   </div>
@@ -307,7 +310,9 @@ export const Hadith = () => {
                         >
                           {language === "urdu"
                             ? currentHadith.explanation?.urdu
-                            : currentHadith.explanation?.english}
+                            : language === "english"
+                              ? currentHadith.explanation?.english
+                              : currentHadith.explanation?.roman}
                         </p>
                       </div>
                     )}

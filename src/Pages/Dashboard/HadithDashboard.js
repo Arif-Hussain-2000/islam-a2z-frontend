@@ -11,10 +11,12 @@ export const HadithDashboard = () => {
   const [arabic, setArabic] = useState("");
   const [urdu, setUrdu] = useState("");
   const [english, setEnglish] = useState("");
+  const [roman,setRoman] = useState("")
   const [narratorUrdu, setNarratorUrdu] = useState("");
   const [narratorEnglish, setNarratorEnglish] = useState("");
   const [explanationUrdu, setExplanationUrdu] = useState("");
   const [explanationEnglish, setExplanationEnglish] = useState("");
+  const [explanationRoman,setExplanationRoman] = useState("");
   const [showUpdateHadithForm, setShowUpdateHadithForm] = useState(false);
   const [hadiths, setHadiths] = useState([]);
   const [selectedUpdateHadith, setSelectedUpdateHadith] = useState("");
@@ -65,12 +67,12 @@ export const HadithDashboard = () => {
     setArabic("");
     setUrdu("");
     setEnglish("");
-
+    setRoman("");
     setNarratorUrdu("");
     setNarratorEnglish("");
-
     setExplanationUrdu("");
     setExplanationEnglish("");
+    setExplanationRoman("");
   };
 
   const handleAddHadith = async () => {
@@ -107,6 +109,10 @@ export const HadithDashboard = () => {
       alert("Please enter English translation");
       return;
     }
+     if (!roman.trim()) {
+      alert("Please enter Roman translation");
+      return;
+    }
 
     try {
       const token = sessionStorage.getItem("adminToken");
@@ -124,7 +130,7 @@ export const HadithDashboard = () => {
           arabic,
           urdu,
           english,
-
+          roman,
           narrator: {
             urdu: narratorUrdu,
             english: narratorEnglish,
@@ -133,6 +139,7 @@ export const HadithDashboard = () => {
           explanation: {
             urdu: explanationUrdu,
             english: explanationEnglish,
+            roman: explanationRoman,
           },
         }),
       });
@@ -149,13 +156,12 @@ export const HadithDashboard = () => {
       setArabic("");
       setUrdu("");
       setEnglish("");
-
+      setRoman("");
       setNarratorUrdu("");
       setNarratorEnglish("");
-
       setExplanationUrdu("");
       setExplanationEnglish("");
-
+      setExplanationRoman("");
       setSelectedHadithBook("");
       setSelectedHadithChapter("");
       setChapters([]);
@@ -180,7 +186,7 @@ export const HadithDashboard = () => {
     setArabic(selectedHadith.arabic);
     setUrdu(selectedHadith.urdu);
     setEnglish(selectedHadith.english);
-
+    setRoman(selectedHadith.roman)
     setNarratorUrdu(selectedHadith.narrator?.urdu || "");
 
     setNarratorEnglish(selectedHadith.narrator?.english || "");
@@ -188,6 +194,8 @@ export const HadithDashboard = () => {
     setExplanationUrdu(selectedHadith.explanation?.urdu || "");
 
     setExplanationEnglish(selectedHadith.explanation?.english || "");
+
+    setExplanationRoman(selectedHadith.explanation?.roman || "");
   };
 
   // Update Hadith
@@ -249,7 +257,7 @@ export const HadithDashboard = () => {
             arabic,
             urdu,
             english,
-
+            roman,
             narrator: {
               urdu: narratorUrdu,
               english: narratorEnglish,
@@ -258,6 +266,7 @@ export const HadithDashboard = () => {
             explanation: {
               urdu: explanationUrdu,
               english: explanationEnglish,
+              roman: explanationRoman,
             },
           }),
         },
@@ -281,13 +290,13 @@ export const HadithDashboard = () => {
       setArabic("");
       setUrdu("");
       setEnglish("");
-
+      setRoman("");
       setNarratorUrdu("");
       setNarratorEnglish("");
 
       setExplanationUrdu("");
       setExplanationEnglish("");
-
+      setExplanationRoman("");
       setShowUpdateHadithForm(false);
     } catch (error) {
       console.log("Error updating Hadith:", error);
@@ -409,7 +418,7 @@ export const HadithDashboard = () => {
 
             {chapters.map((chapter) => (
               <option key={chapter._id} value={chapter._id}>
-                Chapter {chapter.chapterNumber} - {chapter.title}
+                Chapter {chapter.chapterNumber} - {chapter.title?.english}
               </option>
             ))}
           </select>
@@ -479,6 +488,19 @@ export const HadithDashboard = () => {
               className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
             />
           </div>
+          
+          <div className="mt-5">
+            <label className="block text-sm font-medium text-gray-700">
+              Roman Translation
+            </label>
+
+            <textarea
+              value={roman}
+              onChange={(e) => setRoman(e.target.value)}
+              rows="5"
+              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+            />
+          </div>
           <div className="mt-6">
             <h3 className="text-lg font-semibold text-gray-900">
               Raavi / Narrator
@@ -536,6 +558,18 @@ export const HadithDashboard = () => {
               <textarea
                 value={explanationEnglish}
                 onChange={(e) => setExplanationEnglish(e.target.value)}
+                rows="5"
+                className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600"
+              />
+            </div>
+             <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Roman
+              </label>
+
+              <textarea
+                value={explanationRoman}
+                onChange={(e) => setExplanationRoman(e.target.value)}
                 rows="5"
                 className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600"
               />
@@ -636,7 +670,7 @@ export const HadithDashboard = () => {
 
             {chapters.map((chapter) => (
               <option key={chapter._id} value={chapter._id}>
-                Chapter {chapter.chapterNumber} - {chapter.title}
+                Chapter {chapter.chapterNumber} - {chapter.title?.english}
               </option>
             ))}
           </select>
@@ -744,6 +778,19 @@ export const HadithDashboard = () => {
               className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
             />
           </div>
+          <div className="mt-5">
+            <label className="block text-sm font-medium text-gray-700">
+              Roman Translation
+            </label>
+
+            <textarea
+              value={roman}
+              onChange={(e) => setRoman(e.target.value)}
+              placeholder="Enter English translation"
+              rows="5"
+              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+            />
+          </div>
 
           {/* NARRATOR */}
 
@@ -811,6 +858,19 @@ export const HadithDashboard = () => {
                 value={explanationEnglish}
                 onChange={(e) => setExplanationEnglish(e.target.value)}
                 placeholder="Enter explanation"
+                rows="5"
+                className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600"
+              />
+            </div>
+               <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Roman
+              </label>
+
+              <textarea
+                value={explanationRoman}
+                onChange={(e) => setExplanationRoman(e.target.value)}
+                placeholder="explanation likhiye"
                 rows="5"
                 className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600"
               />

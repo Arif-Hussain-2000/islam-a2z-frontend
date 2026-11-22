@@ -113,7 +113,7 @@ export const Header = () => {
               Books
             </NavLink>
              <Link
-              to="/profile"
+              to="/admin"
               className="ml-4 text-white hover:text-[#F9BF29]"
             >
               <i className="bi bi-person text-xl"></i>

@@ -8,7 +8,11 @@ export const ChapterDashboard = () => {
   // Chapter fields
   const [selectedBook, setSelectedBook] = useState("");
   const [chapterNumber, setChapterNumber] = useState("");
-  const [chapterTitle, setChapterTitle] = useState("");
+  const [chapterTitle, setChapterTitle] = useState({
+    urdu: "",
+    english: "",
+    roman: "",
+  });
 
   // Add Chapter
   const [showChapterForm, setShowChapterForm] = useState(false);
@@ -17,12 +21,22 @@ export const ChapterDashboard = () => {
   const [showUpdateChapterForm, setShowUpdateChapterForm] = useState(false);
   const [selectedUpdateChapter, setSelectedUpdateChapter] = useState("");
 
+  // Empty title object
+  const emptyTitle = {
+    urdu: "",
+    english: "",
+    roman: "",
+  };
+
   // =========================
   // FETCH BOOKS
   // =========================
+
   const fetchBooks = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/books`);
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/books`
+      );
 
       const data = await response.json();
 
@@ -41,10 +55,11 @@ export const ChapterDashboard = () => {
   // =========================
   // FETCH CHAPTERS BY BOOK
   // =========================
+
   const fetchChapters = async (bookId) => {
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/chapters?bookId=${bookId}`,
+        `${process.env.REACT_APP_API_URL}/api/chapters?bookId=${bookId}`
       );
 
       const data = await response.json();
@@ -60,31 +75,45 @@ export const ChapterDashboard = () => {
   // =========================
   // ADD CHAPTER
   // =========================
+
   const handleAddChapter = async () => {
     if (!selectedBook) {
       alert("Please select a book");
       return;
     }
 
-    if (!chapterNumber || !chapterTitle.trim()) {
-      alert("Please enter chapter number and title");
+    if (
+      !chapterNumber ||
+      !chapterTitle.urdu.trim() ||
+      !chapterTitle.english.trim() ||
+      !chapterTitle.roman.trim()
+    ) {
+      alert("Please enter chapter number and all three titles");
       return;
     }
 
     try {
       const token = sessionStorage.getItem("adminToken");
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chapters`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          bookId: selectedBook,
-          chapterNumber: Number(chapterNumber),
-          title: chapterTitle.trim(),
-        }),
-      });
+
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/chapters`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            bookId: selectedBook,
+            chapterNumber: Number(chapterNumber),
+            title: {
+              urdu: chapterTitle.urdu.trim(),
+              english: chapterTitle.english.trim(),
+              roman: chapterTitle.roman.trim(),
+            },
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -93,9 +122,11 @@ export const ChapterDashboard = () => {
         return;
       }
 
+      alert("Chapter added successfully");
+
       setSelectedBook("");
       setChapterNumber("");
-      setChapterTitle("");
+      setChapterTitle({ ...emptyTitle });
       setShowChapterForm(false);
     } catch (error) {
       console.log("Error adding chapter:", error);
@@ -106,101 +137,126 @@ export const ChapterDashboard = () => {
   // =========================
   // SELECT CHAPTER FOR UPDATE
   // =========================
+
   const handleSelectUpdateChapter = (chapterId) => {
     setSelectedUpdateChapter(chapterId);
 
     const selectedChapter = chapters.find(
-      (chapter) => chapter._id === chapterId,
+      (chapter) => chapter._id === chapterId
     );
 
     if (selectedChapter) {
       setChapterNumber(selectedChapter.chapterNumber);
-      setChapterTitle(selectedChapter.title);
+
+      setChapterTitle({
+        urdu: selectedChapter.title?.urdu || "",
+        english: selectedChapter.title?.english || "",
+        roman: selectedChapter.title?.roman || "",
+      });
     } else {
       setChapterNumber("");
-      setChapterTitle("");
+      setChapterTitle({ ...emptyTitle });
     }
   };
 
   // =========================
   // CANCEL ADD
   // =========================
+
   const handleCancelChapterForm = () => {
     setShowChapterForm(false);
     setSelectedBook("");
     setChapterNumber("");
-    setChapterTitle("");
-    setChapters([]);
-  };
-    const handleCancelUpdateChapterForm = () => {
-    setShowUpdateChapterForm(false);
-    setSelectedBook("");
-    setChapterNumber("");
-    setChapterTitle("");
+    setChapterTitle({ ...emptyTitle });
     setChapters([]);
   };
 
   // =========================
   // CANCEL UPDATE
   // =========================
-const handleUpdateChapter = async () => {
-  if (!selectedBook) {
-    alert("Please select a book");
-    return;
-  }
 
-  if (!selectedUpdateChapter) {
-    alert("Please select a chapter");
-    return;
-  }
-
-  if (!chapterNumber || !chapterTitle.trim()) {
-    alert("Please enter chapter number and title");
-    return;
-  }
-
-  try {
-    const token = sessionStorage.getItem("adminToken");
-    const response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/chapters/${selectedUpdateChapter}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization:`Bearer ${token}`
-        },
-        body: JSON.stringify({
-          bookId: selectedBook,
-          chapterNumber: Number(chapterNumber),
-          title: chapterTitle.trim(),
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      alert(data.message || "Failed to update chapter");
-      return;
-    }
-
+  const handleCancelUpdateChapterForm = () => {
+    setShowUpdateChapterForm(false);
     setSelectedBook("");
     setSelectedUpdateChapter("");
     setChapterNumber("");
-    setChapterTitle("");
+    setChapterTitle({ ...emptyTitle });
     setChapters([]);
-    setShowUpdateChapterForm(false);
+  };
 
-  } catch (error) {
-    console.log("Error updating chapter:", error);
-    alert("Server error");
-  }
-};
+  // =========================
+  // UPDATE CHAPTER
+  // =========================
 
+  const handleUpdateChapter = async () => {
+    if (!selectedBook) {
+      alert("Please select a book");
+      return;
+    }
+
+    if (!selectedUpdateChapter) {
+      alert("Please select a chapter");
+      return;
+    }
+
+    if (
+      !chapterNumber ||
+      !chapterTitle.urdu.trim() ||
+      !chapterTitle.english.trim() ||
+      !chapterTitle.roman.trim()
+    ) {
+      alert("Please enter chapter number and all three titles");
+      return;
+    }
+
+    try {
+      const token = sessionStorage.getItem("adminToken");
+
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/chapters/${selectedUpdateChapter}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            bookId: selectedBook,
+            chapterNumber: Number(chapterNumber),
+            title: {
+              urdu: chapterTitle.urdu.trim(),
+              english: chapterTitle.english.trim(),
+              roman: chapterTitle.roman.trim(),
+            },
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Failed to update chapter");
+        return;
+      }
+
+      alert("Chapter updated successfully");
+
+      setSelectedBook("");
+      setSelectedUpdateChapter("");
+      setChapterNumber("");
+      setChapterTitle({ ...emptyTitle });
+      setChapters([]);
+      setShowUpdateChapterForm(false);
+    } catch (error) {
+      console.log("Error updating chapter:", error);
+      alert("Server error");
+    }
+  };
 
   return (
     <div className="mt-8 rounded-xl border border-green-100 bg-white p-6 shadow-sm">
-      {/* ================= HEADER ================= */}
+
+      {/* HEADER */}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -208,13 +264,15 @@ const handleUpdateChapter = async () => {
         </div>
 
         <div className="flex gap-3">
-          {/* Add Chapter Button */}
+
+          {/* ADD BUTTON */}
+
           <button
             className="rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-green-800"
             onClick={() => {
               setSelectedBook("");
               setChapterNumber("");
-              setChapterTitle("");
+              setChapterTitle({ ...emptyTitle });
               setChapters([]);
 
               setShowUpdateChapterForm(false);
@@ -224,14 +282,15 @@ const handleUpdateChapter = async () => {
             + Add
           </button>
 
-          {/* Update Chapter Button */}
+          {/* UPDATE BUTTON */}
+
           <button
             className="rounded-lg border border-green-200 px-5 py-2.5 text-sm font-medium text-green-700 transition hover:bg-green-50"
             onClick={() => {
               setSelectedBook("");
               setSelectedUpdateChapter("");
               setChapterNumber("");
-              setChapterTitle("");
+              setChapterTitle({ ...emptyTitle });
               setChapters([]);
 
               setShowChapterForm(false);
@@ -249,7 +308,7 @@ const handleUpdateChapter = async () => {
 
       {showChapterForm && (
         <div className="mt-6 rounded-xl border border-green-100 bg-white p-6 shadow-sm">
-          {/* Form Header */}
+
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">
               Add New Chapter
@@ -263,18 +322,15 @@ const handleUpdateChapter = async () => {
             </button>
           </div>
 
-          {/* Select Book */}
+          {/* SELECT BOOK */}
+
           <label className="mt-4 block text-sm font-medium text-gray-700">
             Select Book
           </label>
 
           <select
             value={selectedBook}
-            onChange={(e) => {
-              const bookId = e.target.value;
-
-              setSelectedBook(bookId);
-            }}
+            onChange={(e) => setSelectedBook(e.target.value)}
             className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
           >
             <option value="">Select a book</option>
@@ -286,40 +342,95 @@ const handleUpdateChapter = async () => {
             ))}
           </select>
 
-          {/* Number + Title */}
+          {/* CHAPTER NUMBER */}
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">
+              Chapter Number
+            </label>
+
+            <input
+              type="number"
+              min="1"
+              value={chapterNumber}
+              onChange={(e) => setChapterNumber(e.target.value)}
+              placeholder="Enter chapter number"
+              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+            />
+          </div>
+
+          {/* THREE LANGUAGE TITLES */}
+
           <div className="mt-4 grid gap-4 md:grid-cols-3">
-            {/* Chapter Number */}
+
+            {/* URDU */}
+
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Chapter Number
-              </label>
-
-              <input
-                type="number"
-                value={chapterNumber}
-                onChange={(e) => setChapterNumber(e.target.value)}
-                placeholder="1"
-                className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
-              />
-            </div>
-
-            {/* Chapter Title */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Chapter Title
+                Chapter Title (Urdu)
               </label>
 
               <input
                 type="text"
-                value={chapterTitle}
-                onChange={(e) => setChapterTitle(e.target.value)}
-                placeholder="Enter chapter title"
+                dir="rtl"
+                value={chapterTitle.urdu}
+                onChange={(e) =>
+                  setChapterTitle((prev) => ({
+                    ...prev,
+                    urdu: e.target.value,
+                  }))
+                }
+                placeholder="اردو عنوان"
                 className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
               />
             </div>
+
+            {/* ENGLISH */}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Chapter Title (English)
+              </label>
+
+              <input
+                type="text"
+                value={chapterTitle.english}
+                onChange={(e) =>
+                  setChapterTitle((prev) => ({
+                    ...prev,
+                    english: e.target.value,
+                  }))
+                }
+                placeholder="Enter English title"
+                className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+              />
+            </div>
+
+            {/* ROMAN */}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Chapter Title (Roman)
+              </label>
+
+              <input
+                type="text"
+                value={chapterTitle.roman}
+                onChange={(e) =>
+                  setChapterTitle((prev) => ({
+                    ...prev,
+                    roman: e.target.value,
+                  }))
+                }
+                placeholder="Enter Roman title"
+                className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600"
+              />
+            </div>
+
           </div>
 
-          {/* Buttons */}
+          {/* BUTTONS */}
+
           <div className="mt-5 flex justify-end gap-3">
             <button
               onClick={handleCancelChapterForm}
@@ -344,7 +455,7 @@ const handleUpdateChapter = async () => {
 
       {showUpdateChapterForm && (
         <div className="mt-6 rounded-xl border border-green-100 bg-white p-6 shadow-sm">
-          {/* Form Header */}
+
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900">
               Update Existing Chapter
@@ -358,7 +469,7 @@ const handleUpdateChapter = async () => {
             </button>
           </div>
 
-          {/* ================= SELECT BOOK ================= */}
+          {/* SELECT BOOK */}
 
           <label className="mt-5 block text-sm font-medium text-gray-700">
             Select Book
@@ -370,14 +481,11 @@ const handleUpdateChapter = async () => {
               const bookId = e.target.value;
 
               setSelectedBook(bookId);
-
-              // Reset previous chapter
               setSelectedUpdateChapter("");
               setChapterNumber("");
-              setChapterTitle("");
+              setChapterTitle({ ...emptyTitle });
               setChapters([]);
 
-              // Fetch chapters belonging to selected book
               if (bookId) {
                 fetchChapters(bookId);
               }
@@ -393,7 +501,7 @@ const handleUpdateChapter = async () => {
             ))}
           </select>
 
-          {/* ================= SELECT CHAPTER ================= */}
+          {/* SELECT CHAPTER */}
 
           <label className="mt-5 block text-sm font-medium text-gray-700">
             Select Chapter
@@ -409,43 +517,107 @@ const handleUpdateChapter = async () => {
 
             {chapters.map((chapter) => (
               <option key={chapter._id} value={chapter._id}>
-                Chapter {chapter.chapterNumber} - {chapter.title}
+                Chapter {chapter.chapterNumber} - {chapter.title?.english}
               </option>
             ))}
           </select>
 
-          {/* ================= EDIT FIELDS ================= */}
+          {/* EDIT FIELDS */}
 
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            {/* Chapter Number */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Chapter Number
-              </label>
+          <div className="mt-5">
 
-              <input
-                type="number"
-                value={chapterNumber}
-                onChange={(e) => setChapterNumber(e.target.value)}
-                disabled={!selectedUpdateChapter}
-                className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600 disabled:bg-gray-100"
-              />
+            {/* CHAPTER NUMBER */}
+
+            <label className="block text-sm font-medium text-gray-700">
+              Chapter Number
+            </label>
+
+            <input
+              type="number"
+              min="1"
+              value={chapterNumber}
+              onChange={(e) => setChapterNumber(e.target.value)}
+              disabled={!selectedUpdateChapter}
+              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600 disabled:bg-gray-100"
+            />
+
+            {/* THREE LANGUAGE TITLES */}
+
+            <div className="mt-4 grid gap-4 md:grid-cols-3">
+
+              {/* URDU */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Updated Title (Urdu)
+                </label>
+
+                <input
+                  type="text"
+                  dir="rtl"
+                  value={chapterTitle.urdu}
+                  onChange={(e) =>
+                    setChapterTitle((prev) => ({
+                      ...prev,
+                      urdu: e.target.value,
+                    }))
+                  }
+                  disabled={!selectedUpdateChapter}
+                  placeholder="اردو عنوان"
+                  className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600 disabled:bg-gray-100"
+                />
+              </div>
+
+              {/* ENGLISH */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Updated Title (English)
+                </label>
+
+                <input
+                  type="text"
+                  value={chapterTitle.english}
+                  onChange={(e) =>
+                    setChapterTitle((prev) => ({
+                      ...prev,
+                      english: e.target.value,
+                    }))
+                  }
+                  disabled={!selectedUpdateChapter}
+                  placeholder="Enter English title"
+                  className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600 disabled:bg-gray-100"
+                />
+              </div>
+
+              {/* ROMAN */}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Updated Title (Roman)
+                </label>
+
+                <input
+                  type="text"
+                  value={chapterTitle.roman}
+                  onChange={(e) =>
+                    setChapterTitle((prev) => ({
+                      ...prev,
+                      roman: e.target.value,
+                    }))
+                  }
+                  disabled={!selectedUpdateChapter}
+                  placeholder="Enter Roman title"
+                  className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600 disabled:bg-gray-100"
+                />
+              </div>
+
             </div>
+          </div>
 
-            {/* Chapter Title */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Updated Chapter Title
-              </label>
+          {/* BUTTONS */}
 
-              <input
-                type="text"
-                value={chapterTitle}
-                onChange={(e) => setChapterTitle(e.target.value)}
-                disabled={!selectedUpdateChapter}
-                className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-green-600 focus:ring-1 focus:ring-green-600 disabled:bg-gray-100"
-              />
-               <div className="mt-5 flex justify-end gap-3">
+          <div className="mt-5 flex justify-end gap-3">
             <button
               onClick={handleCancelUpdateChapterForm}
               className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
@@ -455,13 +627,13 @@ const handleUpdateChapter = async () => {
 
             <button
               onClick={handleUpdateChapter}
-              className="rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-green-800"
+              disabled={!selectedUpdateChapter}
+              className="rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Update Chapter
             </button>
           </div>
-            </div>
-          </div>
+
         </div>
       )}
     </div>
